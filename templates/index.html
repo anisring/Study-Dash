@@ -1,0 +1,75 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Study-Dash — Home</title>
+    <link rel="stylesheet" href="/static/styles.css">
+  </head>
+  <body>
+    <button id="menu-btn">☰</button>
+    <div id="side-menu" class="closed">
+      <button id="menu-close">✕</button>
+      <nav>
+        <button class="menu-link" data-href="/">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 11l9-7 9 7v8a2 2 0 0 1-2 2h-4v-6H9v6H5a2 2 0 0 1-2-2z"/></svg>
+          DASHBOARD
+        </button>
+        <button class="menu-link" data-href="/history">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="8"/><path d="M12 8v5l3 3"/></svg>
+          📜 Marks History
+        </button>
+        <button class="menu-link" data-href="/goals">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>
+          🎯 Goals
+        </button>
+      </nav>
+    </div>
+    <main>
+      <h1 class="title">✏️ DASHBOARD</h1>
+      <section id="latest" class="panel">
+        <h2>LATEST CET TEST</h2>
+        <div id="latest-card" style="display:flex;flex-direction:column;gap:8px;">
+          <div id="latest-meta" style="color:var(--muted)">Loading...</div>
+          <div style="display:flex;gap:12px;align-items:center">
+            <div style="display:flex;gap:16px;align-items:center">
+              <div style="text-align:center"><div style="font-weight:600;color:var(--muted)">Physics</div><div id="latest-p" style="font-weight:600">- / 60</div></div>
+              <div style="text-align:center"><div style="font-weight:600;color:var(--muted)">Chemistry</div><div id="latest-c" style="font-weight:600">- / 60</div></div>
+              <div style="text-align:center"><div style="font-weight:600;color:var(--muted)">Maths</div><div id="latest-m" style="font-weight:600">- / 60</div></div>
+            </div>
+            <div style="margin-left:auto;text-align:right">
+              <div style="color:var(--muted);font-weight:600">TOTAL</div>
+              <div id="latest-total" style="font-size:20px;font-weight:800;color:var(--text)">- / 180</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="chart" class="chart-wrap">
+        <h2>Overall Performance</h2>
+        <svg id="perf-chart" width="720" height="240"></svg>
+      </section>
+
+      <section id="enter" class="enter-card">
+        <h2>ENTER SCORES</h2>
+        <form id="enter-form">
+          <div class="enter-row"><label>Date</label><input name="date" type="date"></div>
+          <div class="enter-row"><label>Test</label><input name="test_name" type="text" placeholder="Test name"></div>
+          <div class="subject-row">
+            <div class="subject"><label>Physics</label><input name="physics" type="number" min="0" max="60"></div>
+            <div class="subject"><label>Chemistry</label><input name="chemistry" type="number" min="0" max="60"></div>
+            <div class="subject"><label>Maths</label><input name="maths" type="number" min="0" max="60"></div>
+            <div style="margin-left:auto"><div class="total-box">TOTAL <span id="live-total">--</span> / 180</div></div>
+          </div>
+          <div class="enter-actions"><button type="submit" class="btn-accent">SAVE TEST</button></div>
+        </form>
+        <div id="enter-msg"></div>
+      </section>
+
+      <section id="goals-tracker">
+        <h2>GOALS TRACKER</h2>
+        <table id="goals-table"><thead><tr><th>Date</th><th>Test</th><th>Goal</th><th>Score</th><th>Diff</th><th>Status</th></tr></thead><tbody></tbody></table>
+      </section>
+    </main>
+    <script src="/static/app.js"></script>
+  </body>
+</html>

@@ -1,0 +1,6 @@
+study_dash.db
+.venv/
+.venv-1/
+__pycache__/
+*.pyc
+.DS_Store

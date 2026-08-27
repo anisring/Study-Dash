@@ -1,0 +1,43 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Study-Dash — Goals</title>
+    <link rel="stylesheet" href="/static/styles.css">
+  </head>
+  <body>
+    <button id="menu-btn">☰</button>
+    <div id="side-menu" class="closed">
+      <button id="menu-close">✕</button>
+      <nav>
+        <button class="menu-link" data-href="/">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 11l9-7 9 7v8a2 2 0 0 1-2 2h-4v-6H9v6H5a2 2 0 0 1-2-2z"/></svg>
+          DASHBOARD
+        </button>
+        <button class="menu-link" data-href="/history">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="8"/><path d="M12 8v5l3 3"/></svg>
+          📜 Marks History
+        </button>
+        <button class="menu-link" data-href="/goals">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>
+          🎯 Goals
+        </button>
+      </nav>
+    </div>
+    <main>
+      <h1 class="title">GOALS</h1>
+      <form id="goal-form">
+        <label>Name <input name="name" required></label>
+        <label>Type <select name="type"><option value="test">test</option><option value="weekly">weekly</option><option value="monthly">monthly</option></select></label>
+        <label>Target <input name="target" type="number" required></label>
+        <div class="hint">* Start and End define a time window for time-based goals (weekly/monthly). Leave them blank for test-based goals. Use Test id to attach a goal to a specific recorded test.</div>
+        <label>Start <input name="start_date" type="date"></label>
+        <label>End <input name="end_date" type="date"></label>
+        <label>Test id (optional) <input name="test_id" type="number"></label>
+        <button type="submit">Save Goal</button>
+      </form>
+      <table id="goals-list"><thead><tr><th>Name</th><th>Type</th><th>Target</th><th>Start</th><th>End</th></tr></thead><tbody></tbody></table>
+    </main>
+    <script src="/static/app.js"></script>
+  </body>
+</html>
