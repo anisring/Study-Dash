@@ -86,25 +86,6 @@ pip install .
 
 This installs the `study-dash` command and includes the application templates and static files. Personal data is not included in the package.
 
-### Publish and install from GitHub Packages
-
-The repository includes a GitHub Actions workflow that publishes a package when a version tag such as `v0.1.1` is pushed. To publish a new version:
-
-```bash
-git tag v0.1.3
-git push origin v0.1.3
-```
-
-After the workflow completes, GitHub Packages will show the package. To install it from another device, create a GitHub token with package-read access and run:
-
-```bash
-python3 -m venv .venv
-source .venv/bin/activate
-pip install --index-url https://__token__:YOUR_GITHUB_TOKEN@pypi.pkg.github.com/anisring/simple study-dash
-```
-
-Replace `YOUR_GITHUB_TOKEN` with a token that has package read access. The package workflow uses GitHub's automatic repository token for publishing.
-
 ---
 
 ## Running the Web App
@@ -152,14 +133,6 @@ study-dash
 ```
 
 The Library checks for reminders while the app is being used and also provides a manual reminder button. Gmail OAuth is not implemented yet, and the App Password is read from environment variables rather than stored in the database.
-
-### GitHub Packages authentication
-
-If the GitHub Actions package upload returns `404 Not Found`, create a GitHub classic personal access token with the `write:packages` scope and add it to the repository as an Actions secret named `PACKAGES_TOKEN`:
-
-**Repository Settings → Secrets and variables → Actions → New repository secret**
-
-Use `PACKAGES_TOKEN` as the name. The publishing workflow will use it for GitHub Packages uploads.
 
 ---
 
