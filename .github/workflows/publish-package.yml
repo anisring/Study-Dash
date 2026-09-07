@@ -34,4 +34,4 @@ jobs:
         run: |
           python -m pip install twine
           python -m twine check dist/*
-          python -m twine upload --non-interactive --skip-existing --repository-url https://pypi.pkg.github.com/${{ github.repository_owner }} dist/*
+          python -m twine upload --non-interactive --repository-url https://pypi.pkg.github.com/${{ github.repository_owner }} dist/*
