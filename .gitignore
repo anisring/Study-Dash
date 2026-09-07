@@ -4,3 +4,5 @@ study_dash.db
 __pycache__/
 *.pyc
 .DS_Store
+profile/
+thelibrary/

@@ -22,10 +22,14 @@
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>
           🎯 Goals
         </button>
+        <button class="menu-link" data-href="/library">
+          The Library
+        </button>
       </nav>
     </div>
     <main>
-      <h1 class="title">✏️ DASHBOARD</h1>
+      <h1 id="dashboard-greeting" class="title">Hello there!</h1>
+      <h2 class="dashboard-heading">✏️ DASHBOARD</h2>
       <section id="latest" class="panel">
         <h2>LATEST CET TEST</h2>
         <div id="latest-card" style="display:flex;flex-direction:column;gap:8px;">
@@ -45,14 +49,14 @@
       </section>
 
       <section id="chart" class="chart-wrap">
-        <h2>Overall Performance</h2>
+        <div class="chart-heading"><h2>Overall Performance</h2><label class="graph-color-control">Graph color <input id="graph-color" type="color" aria-label="Overall performance graph color"></label></div>
         <svg id="perf-chart" width="720" height="240"></svg>
       </section>
 
       <section id="enter" class="enter-card">
         <h2>ENTER SCORES</h2>
         <form id="enter-form">
-          <div class="enter-row"><label>Date</label><input name="date" type="date"></div>
+          <div class="enter-row"><label>Date</label><input name="date" type="text" placeholder="DD/MM/YYYY" inputmode="numeric" pattern="\d{2}/\d{2}/\d{4}" autocomplete="off"></div>
           <div class="enter-row"><label>Test</label><input name="test_name" type="text" placeholder="Test name"></div>
           <div class="subject-row">
             <div class="subject"><label>Physics</label><input name="physics" type="number" min="0" max="60"></div>

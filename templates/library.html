@@ -1,0 +1,76 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Study-Dash — The Library</title>
+    <link rel="stylesheet" href="/static/styles.css">
+  </head>
+  <body>
+    <button id="menu-btn">☰</button>
+    <div id="side-menu" class="closed">
+      <button id="menu-close">✕</button>
+      <nav>
+        <button class="menu-link" data-href="/">DASHBOARD</button>
+        <button class="menu-link" data-href="/history">History</button>
+        <button class="menu-link" data-href="/goals">Goals</button>
+        <button class="menu-link" data-href="/library">The Library</button>
+      </nav>
+    </div>
+    <main>
+      <h1 class="title">The Library</h1>
+      <p class="library-intro">Save your CET question papers here, review them later, and search your saved papers when you get stuck.</p>
+      <section class="panel library-upload-panel">
+        <h2>ADD A QUESTION PAPER</h2>
+        <form id="library-upload-form">
+          <input id="library-file" name="paper" type="file" accept=".pdf,.png,.jpg,.jpeg,.webp,.txt,.md" hidden>
+          <div id="library-dropzone" class="library-dropzone" tabindex="0">
+            <strong>Drop paper here to save</strong>
+            <span>or click to choose a PDF, screenshot, TXT, or Markdown file</span>
+          </div>
+          <div id="library-file-name" class="hint">No file selected</div>
+          <button class="btn-accent" type="submit">Save to The Library</button>
+          <div id="library-upload-msg" class="hint" role="status"></div>
+        </form>
+      </section>
+      <section class="panel">
+        <h2>ASK ABOUT A DOUBT</h2>
+        <form id="library-ask-form" class="library-ask-form">
+          <input name="question" type="search" placeholder="Type the question or keywords you are unsure about" aria-label="Question or doubt">
+          <button class="btn-accent" type="submit">Find in papers</button>
+        </form>
+        <div id="library-answer" class="library-answer" role="status"></div>
+      </section>
+      <section>
+        <div class="library-section-heading"><h2>SAVED PAPERS</h2><span id="library-count" class="hint"></span></div>
+        <div id="library-list" class="library-list"></div>
+      </section>
+      <section class="panel schedule-panel">
+        <div class="library-section-heading"><h2>ADD YOUR DATES AND PORTIONS</h2><span class="hint">Use a sheet or add one test at a time.</span></div>
+        <form id="schedule-upload-form" class="schedule-upload-form">
+          <input id="schedule-file" name="schedule" type="file" accept=".csv,.tsv,.xlsx" hidden>
+          <div id="schedule-dropzone" class="library-dropzone schedule-dropzone" tabindex="0">
+            <strong>Drop your dates sheet here</strong>
+            <span>or click to add a CSV, TSV, or Excel file</span>
+          </div>
+          <div id="schedule-file-name" class="hint">No sheet selected</div>
+          <button class="btn-accent" type="submit">Save dates and portions</button>
+          <div id="schedule-upload-msg" class="hint" role="status"></div>
+        </form>
+        <div class="schedule-divider"><span>or add one test</span></div>
+        <form id="schedule-entry-form" class="schedule-entry-form">
+          <label>Test name <input name="title" required placeholder="CET mock test"></label>
+          <label>Date <input name="exam_date" required placeholder="DD/MM/YYYY" inputmode="numeric"></label>
+          <label>Time <input name="exam_time" placeholder="10:00 AM"></label>
+          <label class="schedule-portions">Portions <textarea name="portions" rows="2" placeholder="Physics: electrostatics; Chemistry: organic basics"></textarea></label>
+          <button class="btn-accent" type="submit">Add test date</button>
+          <div id="schedule-entry-msg" class="hint" role="status"></div>
+        </form>
+        <div class="schedule-reminder-row"><p class="hint">Reminders are sent to the email saved in your profile, one day before each test. Automatic checks run while the app is being used.</p><button id="send-reminders" type="button">Send due reminders</button></div>
+        <div id="schedule-reminder-msg" class="hint" role="status"></div>
+        <div class="library-section-heading schedule-list-heading"><h2>UPCOMING TESTS</h2><span id="schedule-count" class="hint"></span></div>
+        <div id="schedule-list" class="schedule-list"></div>
+      </section>
+    </main>
+    <script src="/static/app.js"></script>
+  </body>
+</html>
