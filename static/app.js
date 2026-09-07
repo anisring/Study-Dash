@@ -434,6 +434,12 @@ function setupSchedule(){
     const result = await response.json();
     document.getElementById('schedule-reminder-msg').textContent = result.error || (result.sent ? `${result.sent} reminder sent.` : result.message);
   });
+  fetch('/api/gmail/status').then(response => response.json()).then(status => {
+    const message = document.getElementById('gmail-status');
+    const connect = document.getElementById('connect-gmail');
+    if(status.connected) { message.textContent = 'Gmail is connected. Reminders can be sent to the email on your Profile.'; connect.textContent = 'Reconnect Gmail'; }
+    else if(!status.configured) { message.textContent = 'Add Google OAuth client settings before connecting Gmail.'; connect.textContent = 'Gmail setup needed'; }
+  });
   loadSchedule();
 }
 

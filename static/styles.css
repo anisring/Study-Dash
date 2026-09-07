@@ -103,6 +103,8 @@ input[type=date], input[type=number]{ width:150px }
 .schedule-entry-form button{ justify-self:start }
 .schedule-reminder-row{ display:flex; align-items:center; justify-content:space-between; gap:12px; margin-top:18px; flex-wrap:wrap }
 .schedule-reminder-row p{ margin:0 }
+.schedule-reminder-actions{ display:flex; align-items:center; gap:10px; flex-wrap:wrap }
+.schedule-reminder-actions a{ text-decoration:none }
 .schedule-list-heading{ margin-top:24px }
 .schedule-list{ display:grid; gap:8px; margin-top:10px }
 .schedule-item{ display:flex; align-items:center; justify-content:space-between; gap:14px; padding:12px 14px; background:rgba(255,255,255,0.03); border:1px solid var(--border); border-left:3px solid var(--accent); border-radius:6px }

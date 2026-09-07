@@ -124,15 +124,15 @@ These files are ignored by Git and are not included when another user installs t
 
 ## Gmail Reminders
 
-Add an email address on the Profile page. Gmail reminders use a Gmail App Password, not your regular Gmail password:
+Add an email address on the Profile page. Gmail reminders use Google OAuth. The app never asks for or stores your Gmail password:
 
 ```bash
-export STUDY_DASH_GMAIL_ADDRESS="your-gmail@gmail.com"
-export STUDY_DASH_GMAIL_APP_PASSWORD="your-gmail-app-password"
+export STUDY_DASH_GOOGLE_CLIENT_ID="your-google-oauth-client-id"
+export STUDY_DASH_GOOGLE_CLIENT_SECRET="your-google-oauth-client-secret"
 study-dash
 ```
 
-The Library checks for reminders while the app is being used and also provides a manual reminder button. Gmail OAuth is not implemented yet, and the App Password is read from environment variables rather than stored in the database.
+Open The Library and click **Connect Gmail**. Approve the Gmail send permission once, then reminders use the saved OAuth token. The token is stored locally in `profile/gmail-token.json`, which is ignored by Git. The Library checks for reminders while the app is being used and also provides a manual reminder button.
 
 ---
 

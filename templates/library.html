@@ -65,7 +65,7 @@
           <button class="btn-accent" type="submit">Add test date</button>
           <div id="schedule-entry-msg" class="hint" role="status"></div>
         </form>
-        <div class="schedule-reminder-row"><p class="hint">Reminders are sent to the email saved in your profile, one day before each test. Automatic checks run while the app is being used.</p><button id="send-reminders" type="button">Send due reminders</button></div>
+        <div class="schedule-reminder-row"><p id="gmail-status" class="hint">Connect Gmail to send reminders one day before each test.</p><div class="schedule-reminder-actions"><a id="connect-gmail" class="btn-accent" href="/oauth2authorize">Connect Gmail</a><button id="send-reminders" type="button">Send due reminders</button></div></div>
         <div id="schedule-reminder-msg" class="hint" role="status"></div>
         <div class="library-section-heading schedule-list-heading"><h2>UPCOMING TESTS</h2><span id="schedule-count" class="hint"></span></div>
         <div id="schedule-list" class="schedule-list"></div>

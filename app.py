@@ -1,4 +1,4 @@
-from flask import Flask, jsonify, request, render_template, send_from_directory, send_file
+from flask import Flask, jsonify, request, render_template, send_from_directory, send_file, redirect, session
 import db
 from datetime import datetime
 from pathlib import Path
@@ -9,7 +9,7 @@ from email.utils import parseaddr
 import csv
 import io
 import os
-import smtplib
+import base64
 from email.message import EmailMessage
 import sys
 
@@ -26,12 +26,14 @@ def find_asset_dir(name: str) -> Path:
 
 LIBRARY_DIR = Path.cwd() / 'thelibrary'
 PROFILE_DIR = Path.cwd() / 'profile'
+OAUTH_TOKEN_PATH = PROFILE_DIR / 'gmail-token.json'
 TEMPLATE_DIR = find_asset_dir('templates')
 STATIC_DIR = find_asset_dir('static')
 ALLOWED_LIBRARY_EXTENSIONS = {'.pdf', '.txt', '.md', '.png', '.jpg', '.jpeg', '.webp'}
 ALLOWED_SCHEDULE_EXTENSIONS = {'.csv', '.tsv', '.xlsx'}
 
 app = Flask(__name__, static_folder=str(STATIC_DIR), template_folder=str(TEMPLATE_DIR))
+app.secret_key = os.environ.get('STUDY_DASH_FLASK_SECRET', 'study-dash-local-oauth')
 _last_reminder_check = None
 
 
@@ -41,7 +43,7 @@ def check_due_reminders():
     today = datetime.now().date().isoformat()
     if _last_reminder_check == today:
         return
-    if os.environ.get('STUDY_DASH_GMAIL_ADDRESS') and os.environ.get('STUDY_DASH_GMAIL_APP_PASSWORD') and db.get_profile().get('email'):
+    if gmail_is_connected() and db.get_profile().get('email'):
         _last_reminder_check = today
         try:
             send_due_reminders()
@@ -187,34 +189,97 @@ def normalize_schedule_row(row):
     return {'title': str(title).strip(), 'exam_date': date, 'exam_time': str(exam_time).strip() if exam_time else None, 'portions': str(portions).strip()}
 
 
+GMAIL_SCOPE = ['https://www.googleapis.com/auth/gmail.send']
+
+
+def google_client_config():
+    client_id = os.environ.get('STUDY_DASH_GOOGLE_CLIENT_ID', '').strip()
+    client_secret = os.environ.get('STUDY_DASH_GOOGLE_CLIENT_SECRET', '').strip()
+    if not client_id or not client_secret:
+        return None
+    return {'web': {'client_id': client_id, 'client_secret': client_secret, 'auth_uri': 'https://accounts.google.com/o/oauth2/auth', 'token_uri': 'https://oauth2.googleapis.com/token', 'redirect_uris': ['http://127.0.0.1:5000/oauth2callback']}}
+
+
+def gmail_credentials():
+    if not OAUTH_TOKEN_PATH.exists():
+        return None
+    try:
+        from google.oauth2.credentials import Credentials
+        credentials = Credentials.from_authorized_user_file(str(OAUTH_TOKEN_PATH), GMAIL_SCOPE)
+        if credentials and credentials.expired and credentials.refresh_token:
+            from google.auth.transport.requests import Request
+            credentials.refresh(Request())
+            OAUTH_TOKEN_PATH.write_text(credentials.to_json(), encoding='utf-8')
+        return credentials if credentials and credentials.valid else None
+    except Exception:
+        return None
+
+
+def gmail_is_connected():
+    return gmail_credentials() is not None
+
+
+@app.route('/oauth2authorize')
+def oauth2authorize():
+    config = google_client_config()
+    if not config:
+        return 'Set STUDY_DASH_GOOGLE_CLIENT_ID and STUDY_DASH_GOOGLE_CLIENT_SECRET before connecting Gmail.', 503
+    from google_auth_oauthlib.flow import Flow
+    flow = Flow.from_client_config(config, scopes=GMAIL_SCOPE)
+    flow.redirect_uri = 'http://127.0.0.1:5000/oauth2callback'
+    authorization_url, state = flow.authorization_url(access_type='offline', include_granted_scopes='true', prompt='consent')
+    session['oauth_state'] = state
+    return redirect(authorization_url)
+
+
+@app.route('/oauth2callback')
+def oauth2callback():
+    config = google_client_config()
+    state = session.pop('oauth_state', None)
+    if not config or not state:
+        return 'OAuth setup expired. Start the Gmail connection again.', 400
+    from google_auth_oauthlib.flow import Flow
+    flow = Flow.from_client_config(config, scopes=GMAIL_SCOPE, state=state)
+    flow.redirect_uri = 'http://127.0.0.1:5000/oauth2callback'
+    try:
+        flow.fetch_token(authorization_response=request.url)
+        PROFILE_DIR.mkdir(exist_ok=True)
+        OAUTH_TOKEN_PATH.write_text(flow.credentials.to_json(), encoding='utf-8')
+    except Exception as error:
+        return f'Gmail connection failed: {error}', 400
+    return redirect('/library?gmail=connected')
+
+
+@app.route('/api/gmail/status')
+def gmail_status():
+    return jsonify({'configured': bool(google_client_config()), 'connected': gmail_is_connected()})
+
+
 def send_due_reminders():
     profile = db.get_profile()
-    sender = os.environ.get('STUDY_DASH_GMAIL_ADDRESS', '').strip()
-    app_password = os.environ.get('STUDY_DASH_GMAIL_APP_PASSWORD', '').strip()
     recipient = profile.get('email', '').strip()
-    if not sender or not app_password or not recipient:
-        return {'sent': 0, 'skipped': 0, 'error': 'Gmail address, Gmail app password, and profile email are required.'}
+    credentials = gmail_credentials()
+    if not credentials or not recipient:
+        return {'sent': 0, 'skipped': 0, 'error': 'Connect Gmail and add a recipient email on your Profile page first.'}
     today = datetime.now().date()
     due = [event for event in db.get_exam_events() if not event['reminder_sent_at'] and (datetime.strptime(event['exam_date'], '%Y-%m-%d').date() - today).days == 1]
     if not due:
         return {'sent': 0, 'skipped': 0, 'message': 'No reminders are due today.'}
     sent = 0
     try:
-        with smtplib.SMTP_SSL('smtp.gmail.com', 465) as smtp:
-            smtp.login(sender, app_password)
-            for event in due:
-                message = EmailMessage()
-                message['Subject'] = f"Reminder: {event['title']} is tomorrow"
-                message['From'] = sender
-                message['To'] = recipient
-                when = event['exam_date']
-                if event['exam_time']:
-                    when += f" at {event['exam_time']}"
-                portions = event['portions'] or 'No portions were provided.'
-                message.set_content(f"Hello {profile.get('name') or 'there'},\n\nThis is a reminder that {event['title']} is tomorrow ({when}).\n\nPortions:\n{portions}\n\nGood luck with your preparation!")
-                smtp.send_message(message)
-                db.mark_exam_reminded(event['id'], datetime.now().isoformat(timespec='seconds'))
-                sent += 1
+        from googleapiclient.discovery import build
+        service = build('gmail', 'v1', credentials=credentials, cache_discovery=False)
+        for event in due:
+            message = EmailMessage()
+            message['Subject'] = f"Reminder: {event['title']} is tomorrow"
+            message['To'] = recipient
+            when = event['exam_date'] + (f" at {event['exam_time']}" if event['exam_time'] else '')
+            portions = event['portions'] or 'No portions were provided.'
+            message.set_content(f"Hello {profile.get('name') or 'there'},\n\nThis is a reminder that {event['title']} is tomorrow ({when}).\n\nPortions:\n{portions}\n\nGood luck with your preparation!")
+            raw = base64.urlsafe_b64encode(message.as_bytes()).decode()
+            service.users().messages().send(userId='me', body={'raw': raw}).execute()
+            db.mark_exam_reminded(event['id'], datetime.now().isoformat(timespec='seconds'))
+            sent += 1
     except Exception as error:
         return {'sent': sent, 'skipped': len(due) - sent, 'error': f'Gmail sending failed: {error}'}
     return {'sent': sent, 'skipped': 0}
