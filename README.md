@@ -91,8 +91,8 @@ This installs the `study-dash` command and includes the application templates an
 The repository includes a GitHub Actions workflow that publishes a package when a version tag such as `v0.1.1` is pushed. To publish a new version:
 
 ```bash
-git tag v0.1.2
-git push origin v0.1.2
+git tag v0.1.3
+git push origin v0.1.3
 ```
 
 After the workflow completes, GitHub Packages will show the package. To install it from another device, create a GitHub token with package-read access and run:
