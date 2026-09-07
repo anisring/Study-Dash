@@ -30,7 +30,7 @@ jobs:
       - name: Publish to GitHub Packages
         env:
           TWINE_USERNAME: ${{ github.actor }}
-          TWINE_PASSWORD: ${{ secrets.GITHUB_TOKEN }}
+          TWINE_PASSWORD: ${{ secrets.PACKAGES_TOKEN || secrets.GITHUB_TOKEN }}
         run: |
           python -m pip install twine
           python -m twine check dist/*

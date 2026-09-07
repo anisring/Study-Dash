@@ -153,6 +153,14 @@ study-dash
 
 The Library checks for reminders while the app is being used and also provides a manual reminder button. Gmail OAuth is not implemented yet, and the App Password is read from environment variables rather than stored in the database.
 
+### GitHub Packages authentication
+
+If the GitHub Actions package upload returns `404 Not Found`, create a GitHub classic personal access token with the `write:packages` scope and add it to the repository as an Actions secret named `PACKAGES_TOKEN`:
+
+**Repository Settings → Secrets and variables → Actions → New repository secret**
+
+Use `PACKAGES_TOKEN` as the name. The publishing workflow will use it for GitHub Packages uploads.
+
 ---
 
 ## License
