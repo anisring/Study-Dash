@@ -11,13 +11,27 @@ import io
 import os
 import smtplib
 from email.message import EmailMessage
+import sys
 
-LIBRARY_DIR = Path(__file__).resolve().parent / 'thelibrary'
-PROFILE_DIR = Path(__file__).resolve().parent / 'profile'
+SOURCE_DIR = Path(__file__).resolve().parent
+
+
+def find_asset_dir(name: str) -> Path:
+    local_path = SOURCE_DIR / name
+    if local_path.exists():
+        return local_path
+    installed_path = Path(sys.prefix) / 'share' / 'study-dash' / name
+    return installed_path
+
+
+LIBRARY_DIR = Path.cwd() / 'thelibrary'
+PROFILE_DIR = Path.cwd() / 'profile'
+TEMPLATE_DIR = find_asset_dir('templates')
+STATIC_DIR = find_asset_dir('static')
 ALLOWED_LIBRARY_EXTENSIONS = {'.pdf', '.txt', '.md', '.png', '.jpg', '.jpeg', '.webp'}
 ALLOWED_SCHEDULE_EXTENSIONS = {'.csv', '.tsv', '.xlsx'}
 
-app = Flask(__name__, static_folder='static', template_folder='templates')
+app = Flask(__name__, static_folder=str(STATIC_DIR), template_folder=str(TEMPLATE_DIR))
 _last_reminder_check = None
 
 
@@ -459,6 +473,10 @@ def api_goal_modify(gid):
     return jsonify({'updated': gid})
 
 
-if __name__ == '__main__':
+def main():
     db.init_db()
     app.run(host='127.0.0.1', port=5000, debug=True)
+
+
+if __name__ == '__main__':
+    main()

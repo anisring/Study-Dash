@@ -1,73 +1,141 @@
 # Study-Dash
 
-KCET study dashboard with a Flask web UI, a Tkinter desktop UI, SQLite storage,
-performance analysis, goals, paper storage, profile customization, and upcoming
-test reminders.
+Study-Dash is a locally run study and KCET performance dashboard built with Python.
 
-Installation
+It allows students to record test scores, track progress over time, compare performances, set goals, and analyse their strengths and weaknesses across subjects.
 
-1. Create a Python 3.10+ virtual environment.
-2. Install dependencies:
+---
+
+## Features
+
+### Dashboard
+- Enter Physics, Chemistry and Mathematics test scores.
+- Automatically calculates the total score out of 180.
+- Displays your latest test performance.
+- Tracks your overall performance through a progress graph.
+- Set and track score goals.
+
+### Marks History
+- Stores all previously entered test scores.
+- Displays detailed test-wise performance.
+- Compare two tests to see improvements or drops in each subject.
+- Visualise overall progress and score changes.
+- View performance analysis based on your recorded marks.
+
+### Goals
+- Create test, weekly or monthly score goals.
+- Track your current performance against a target.
+- See how many marks above or below your target you are.
+
+### Customisation
+- Personalise the application's colour palette.
+- Customise the background, panels, text, buttons and graph colours.
+- Save your preferences locally.
+
+### Library
+- Store question papers and study material.
+- Supports PDF, TXT and Markdown files.
+- Store upcoming test dates and portions.
+- Import dates and portions from CSV, TSV or Excel sheets.
+- Estimate paper difficulty and search saved papers for doubts.
+
+### Profile
+- Create a personal profile with your name, email and profile picture.
+- Display a personalised greeting on the dashboard.
+
+### Reminders
+- Add upcoming tests and their portions.
+- The application can check for upcoming reminders while running.
+- Optional Gmail reminders can be configured using environment variables.
+
+---
+
+## Tech Stack
+
+- **Python**
+- **Flask** – Web interface
+- **Tkinter** – Desktop interface
+- **SQLite** – Local data storage
+- **Matplotlib** – Performance graphs
+
+All data is stored locally on the user's device.
+
+---
+
+## Installation
+
+Clone the repository:
 
 ```bash
-pip install -r requirements.txt
+git clone https://github.com/anisring/Study-Dash.git
+cd Study-Dash
 ```
 
-Run the desktop UI
+Create and activate a virtual environment:
+
+```bash
+python3 -m venv .venv
+source .venv/bin/activate
+```
+
+Install the package:
+
+```bash
+pip install .
+```
+
+This installs the `study-dash` command and includes the application templates and static files. Personal data is not included in the package.
+
+---
+
+## Running the Web App
+
+```bash
+study-dash
+```
+
+Open http://127.0.0.1:5000 in your browser.
+
+You can also run directly from the repository:
+
+```bash
+python app.py
+```
+
+## Running the Desktop App
 
 ```bash
 python study.py
 ```
 
-Run the web UI
+---
+
+## Local Data
+
+The app creates local data in the directory from which it is run:
+
+- `study_dash.db` – marks, goals, profile, and schedules.
+- `profile/` – profile pictures.
+- `thelibrary/` – uploaded question papers.
+
+These files are ignored by Git and are not included when another user installs the package. A fresh installation therefore starts with an empty profile, empty marks history, and empty Library.
+
+---
+
+## Gmail Reminders
+
+Add an email address on the Profile page. Gmail reminders use a Gmail App Password, not your regular Gmail password:
 
 ```bash
-# Start the local Flask web server at http://127.0.0.1:5000
-python app.py
+export STUDY_DASH_GMAIL_ADDRESS="your-gmail@gmail.com"
+export STUDY_DASH_GMAIL_APP_PASSWORD="your-gmail-app-password"
+study-dash
 ```
 
-Open `http://127.0.0.1:5000` in a browser.
+The Library checks for reminders while the app is being used and also provides a manual reminder button. Gmail OAuth is not implemented yet, and the App Password is read from environment variables rather than stored in the database.
 
-Database
+---
 
-- The SQLite database file `study_dash.db` is created in the same folder as the app.
+## License
 
-Email reminders
-
-- Add your email on the Profile page.
-- In The Library, add upcoming tests manually or import a CSV, TSV, or XLSX sheet.
-- Sheets should include a date column and a test/exam/title column. Optional columns are `time` and `portions`, `topics`, or `syllabus`.
-- Dates are entered and displayed as `DD/MM/YYYY`.
-- Gmail reminders require a Gmail App Password. Set `STUDY_DASH_GMAIL_ADDRESS` and `STUDY_DASH_GMAIL_APP_PASSWORD` before starting the app.
-- The app checks for due reminders while it is being used. The Library page also has a manual `Send due reminders` button.
-- Gmail OAuth is not implemented yet; the App Password is used only as a server-side environment variable and is never stored in SQLite.
-
-Web features
-
-- Dashboard greeting and profile page with name, email, and profile picture.
-- Persistent color customization for the background, panels, inputs, text, borders, and buttons.
-- Overall performance graph with a fixed 0-180 scale and custom graph color.
-- Marks History analysis and comparison of any two tests by total and subject.
-- The Library supports PDF, TXT, and Markdown question papers, question counting up to 200, paper difficulty estimates, and keyword-based doubt lookup.
-- The Library also stores upcoming test dates and portions for reminder emails.
-
-Files
-
-- study.py: Main Tkinter application and UI.
-- db.py: SQLite helpers and CRUD for tests and goals.
-- charts.py: Matplotlib helper functions for embedding plots.
-- stats.py: Compute statistics and generate analysis strings.
-- requirements.txt: Python package requirements.
-- templates/library.html: Question paper and test schedule library.
-- templates/profile.html: User profile page.
-
-Data flow
-
-1. Enter scores on the Dashboard.
-2. `db.add_test()` saves the record to `study_dash.db`.
-3. UI functions reload data via `db.get_tests()` and refresh graphs, tables, comparisons, and analysis.
-
-Extending
-
-- Add new subjects by updating `db` schema and UI fields.
-- Add more graphs in `charts.py` and wire them in `study.py`.
+This project is for personal and educational use.

@@ -16,9 +16,9 @@ function toIsoDate(value){
 
 function setupProfile(){
   fetch('/api/profile').then(response => response.json()).then(profile => {
-    const name = profile.name || 'there';
+    const name = profile.name || '';
     const greeting = document.getElementById('dashboard-greeting');
-    if(greeting) greeting.textContent = `Hello ${name}!`;
+    if(greeting) greeting.textContent = name ? `Hello ${name}!` : 'Set up your profile';
     const link = document.createElement('a');
     link.className = 'profile-link'; link.href = '/profile';
     link.title = profile.name ? `Profile: ${profile.name}` : 'Set up your profile';
@@ -30,7 +30,7 @@ function setupProfile(){
     form.name.value = profile.name || ''; form.email.value = profile.email || '';
     const preview = document.getElementById('profile-preview-avatar');
     if(profile.avatar_url) preview.innerHTML = `<img src="${profile.avatar_url}" alt="">`;
-    document.getElementById('profile-preview-name').textContent = profile.name ? `Hello ${profile.name}!` : 'Hello there!';
+    document.getElementById('profile-preview-name').textContent = profile.name ? `Hello ${profile.name}!` : 'Set up your profile';
     form.addEventListener('submit', async event => {
       event.preventDefault();
       const response = await fetch('/api/profile', {method:'POST', body:new FormData(form)});
