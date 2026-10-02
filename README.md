@@ -1,6 +1,6 @@
 # Study-Dash
 
-Study-Dash is a locally run study and KCET performance dashboard built with Python.
+Study-Dash is a locally run study, KCET and Board Exam performance dashboard built with Python.
 
 It allows students to record test scores, track progress over time, compare performances, set goals, and analyse their strengths and weaknesses across subjects.
 
